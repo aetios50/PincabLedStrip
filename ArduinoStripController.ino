@@ -12,16 +12,13 @@
 #define FirmwareVersionMajor 1
 #define FirmwareVersionMinor 1
 
-//Defines the max number of ledstrip which is allowed per ledstriptrip.
-//This number is fine for Teensy 3.2, 3.1. For newer Teensy versions (they dont exists yet) it might be possible to increase this number.
-#define MaxLedsPerStrip 1100
-//TODO FIXME
+//Définie le nombre max de Leds.
+#define MaxLeds 103 // 
 
-//Defines the Pinnumber to which the built in led of the Teensy is connected.
-//For Teensy 3.2, 3.1 this is pin 13, if you use a newer Teensy version (not available at the time of writing) you might need to change this number.
-#define LedPin 0 // 13
+//Definie un Pin pour connecter une LED simple qui permettrat de connaitre le statut de la connexion entre le DOF et l'Arduino.
+#define LedPin 10
 
-//Variable used to control the blinking and flickering of the led of the Teensy
+//Variable utilisée pour le contrôle du clignotement de la LED
 elapsedMillis BlinkTimer;
 int BlinkMode;
 elapsedMillis BlinkModeTimeoutTimer;
