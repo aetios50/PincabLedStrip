@@ -31,7 +31,7 @@ elapsedMillis BlinkModeTimeoutTimer;
 CRGB leds[MaxLedsPerStrip];
 LedStrip ledstrip(MaxLedsPerStrip,leds);
 
-word configuredStripLength=64;
+word configuredStripLength=53; // Nombre de leds par strip
 
 //Setup of the system. Is called once on startup.
 void setup() {
