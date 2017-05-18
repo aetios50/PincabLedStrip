@@ -12,11 +12,11 @@
 #define FirmwareVersionMajor 1
 #define FirmwareVersionMinor 1
 
-//Définie le nombre max de Leds.
-#define MaxLeds 103 // 
+//Définie le nombre max de Leds par strip.
+#define MaxLedsPerStrip 1100 // 
 
 //Definie un Pin pour connecter une LED simple qui permettrat de connaitre le statut de la connexion entre le DOF et l'Arduino.
-#define LedPin 10
+#define LedPin 10 // ex : 10 pour mon MEGA2560
 
 //Variable utilisée pour le contrôle du clignotement de la LED
 elapsedMillis BlinkTimer;
@@ -202,12 +202,10 @@ void OutputData() {
 }
 
 
-//Fills the given area of a ledstriptrip with a color
+//Fills the given area of a ledstrip with a color
 void Fill() {
         word firstLed=ReceiveWord();
-
         word numberOfLeds=ReceiveWord();
-
         int ColorData=ReceiveColorData();
 
         if( firstLed<=configuredStripLength*8 && numberOfLeds>0 && firstLed+numberOfLeds-1<=configuredStripLength*8 ) {
@@ -228,7 +226,6 @@ void Fill() {
 //Receives data for the ledstriptrips
 void ReceiveData() {
         word firstLed=ReceiveWord();
-
         word numberOfLeds=ReceiveWord();
 /*
  #ifdef DEBUG_ON_WIFI
