@@ -11,8 +11,8 @@
 FASTLED_USING_NAMESPACE
 
 
-#define DATA_PIN1   12 // GPIO12 / D7 on WeMos/NodeMCU ESP8266
-#define DATA_PIN2   13 // D6 
+#define DATA_PIN1   12 // GPIO12 / D6 on WeMos/NodeMCU ESP8266
+#define DATA_PIN2   13 // D7 
 #define DATA_PIN3   14 // D5
 
 #define LED_TYPE    WS2811
