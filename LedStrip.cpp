@@ -20,7 +20,7 @@ void LedStrip::begin(void)
   if (NUMBER_LEDSTRIP > 2)
     FastLED.addLeds<LED_TYPE, DATA_PIN3, COLOR_ORDER>(leds[2], stripLen).setCorrection( TypicalLEDStrip );
   if (NUMBER_LEDSTRIP > 3)
-    FastLED.addLeds<LED_TYPE, DATA_PIN3, COLOR_ORDER>(leds[3], stripLen).setCorrection( TypicalLEDStrip );
+    FastLED.addLeds<LED_TYPE, DATA_PIN4, COLOR_ORDER>(leds[3], stripLen).setCorrection( TypicalLEDStrip );
   
   FastLED.setBrightness(  BRIGHTNESS );
   FastLED.setDither( 0 );
