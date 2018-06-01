@@ -14,6 +14,7 @@ FASTLED_USING_NAMESPACE
 #define DATA_PIN1   12 // GPIO12 / D6 on WeMos/NodeMCU ESP8266
 #define DATA_PIN2   13 // D7 
 #define DATA_PIN3   14 // D5
+#define DATA_PIN4   15 // D8
 
 #define LED_TYPE    WS2811
 #define COLOR_ORDER RGB
@@ -23,7 +24,7 @@ FASTLED_USING_NAMESPACE
 //Defines the max number of ledstrip which is allowed per ledstriptrip.
 #define MaxLedsPerStrip 432
 //Defines the number of ledstrip
-#define NUMBER_LEDSTRIP 1
+#define NUMBER_LEDSTRIP 4
 //Defines Brightness
 #define BRIGHTNESS  255
 /*************   END VALUE TO CHANGE  *******************/
