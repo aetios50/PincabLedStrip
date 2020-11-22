@@ -1,3 +1,13 @@
-Pour plus d'infos http://www.pincabpassion.net/t5535-tuto-pilotage-de-ledstrip-adressable-style-teensy-via-wemos-d1-pro#116889
+# What is it ?
+A fork of https://github.com/aetios50/PincabLedStrip improving significantly performances for Wemos D1 mini pro driven addressable leds (WS2812). DOF effects are smooth and responsive compared to initial firmware. 
+Still a WIP.
 
-Une fois la WEMOS flashée, il faut remplacer le fichier directoutput.dll situé dans votre dossier DirectOutput (ex : C:/DirectOutput) par celui-ci : https://drive.google.com/file/d/0B9SApYAGI8xhelFpSzVnZXNCXzQ/view?usp=sharing (version incluant le patch DJRobx)
+# Important notes
+Currently requires a patched DOF, the below won't work on existing one. Please use the **DirectOutput.DLL** from this repository
+
+Your **cabinet.xml** file needs to be adapted to use a 2Mbs serial connection & to activate a new feature (PerLedstripLength)
+
+    <ComPortBaudRate>2000000</ComPortBaudRate>
+	<SendPerLedstripLength>true</SendPerLedstripLength>
+
+

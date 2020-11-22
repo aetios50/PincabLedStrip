@@ -20,7 +20,7 @@ static WifiDebug wifidebug;
 #include "LedStrip.h"
 
 #define FirmwareVersionMajor 1
-#define FirmwareVersionMinor 1
+#define FirmwareVersionMinor 2
 
 //Defines the Pinnumber to which the built in led
 #define LedPin D4
@@ -36,7 +36,7 @@ uint32_t configuredStripLength = MaxLedsPerStrip;
 
 //Setup of the system. Is called once on startup.
 void setup() {
-  Serial.begin(921600);
+  Serial.begin(2000000);//921600);
   while (Serial.available()) {
     Serial.read();
   };
@@ -66,22 +66,22 @@ void setup() {
   /****/
   ClearAllLedData();
   ledstrip.show();
-  for (uint32_t i = 0; i < configuredStripLength; i++) {
-    ledstrip.setPixel(i, 255, 0, 0);
+for (uint32_t i = 0; i < configuredStripLength* NUMBER_LEDSTRIP; i++) {
+  ledstrip.setPixel(i, BRIGHTNESS, 0, 0);
   }
   ledstrip.show();
   FastLED.delay(200);
   ClearAllLedData();
   ledstrip.show();
-  for (uint32_t i = 0; i < configuredStripLength; i++) {
-    ledstrip.setPixel(i, 0, 255, 0);
+  for (uint32_t i = 0; i < configuredStripLength* NUMBER_LEDSTRIP; i++) {
+    ledstrip.setPixel(i, 0, BRIGHTNESS, 0);
   }
   ledstrip.show();
   FastLED.delay(200);
   ClearAllLedData();
   ledstrip.show();
-  for (uint32_t i = 0; i < configuredStripLength; i++) {
-    ledstrip.setPixel(i, 0, 0, 255);
+  for (uint32_t i = 0; i < configuredStripLength* NUMBER_LEDSTRIP; i++) {
+    ledstrip.setPixel(i, 0, 0, BRIGHTNESS);
   }
   ledstrip.show();
   FastLED.delay(200);
@@ -100,6 +100,10 @@ void loop() {
     receivedByte = Serial.read();
 
     switch (receivedByte) {
+      case 'Z':
+        //Set length of a strip
+        SetALedStripLength();
+        break;
       case 'L':
         //Set length of strips
         SetLedStripLength();
@@ -208,10 +212,11 @@ void Fill() {
   word numberOfLeds = ReceiveWord();
   int ColorData = ReceiveColorData();
   if ( firstLed <= configuredStripLength * NUMBER_LEDSTRIP && numberOfLeds > 0 && firstLed + numberOfLeds - 1 <= configuredStripLength * NUMBER_LEDSTRIP ) {
-    word endLedNr = firstLed + numberOfLeds;
+    ledstrip.setPixels(firstLed,numberOfLeds,ColorData);
+    /*word endLedNr = firstLed + numberOfLeds;
     for (word ledNr = firstLed; ledNr < endLedNr; ledNr++) {
       ledstrip.setPixel(ledNr, ColorData);
-    }
+    }*/
     Ack();
   } else {
     //Number of the first led or the number of ledstrip to receive is outside the allowed range
@@ -254,11 +259,31 @@ void SetLedStripLength() {
   }
 }
 
+
+//Sets the length of a led strip
+void SetALedStripLength() {
+  while (!Serial.available()) {};
+  byte indexStrip = Serial.read();  while (!Serial.available()) {};
+  byte lastStrip = Serial.read();
+  while (!Serial.available()) {};
+  word stripLength = ReceiveWord();
+  /*if (stripLength < 1 || stripLength > MaxLedsPerStrip ) {
+    //stripLength is either to small or above the max number of ledstrip allowed or strip index is not within existing range
+    Nack();
+  } else*/ {
+    //stripLength is in the valid range
+    ledstrip.addNewStrip(indexStrip,stripLength);
+    Ack();
+  }
+}
+
+
 //Clears the data for all configured ledstrip
 void  ClearAllLedData() {
-  for (word ledNr = 0; ledNr < configuredStripLength * NUMBER_LEDSTRIP; ledNr++) {
+  /*for (word ledNr = 0; ledNr < configuredStripLength * NUMBER_LEDSTRIP; ledNr++) {
     ledstrip.setPixel(ledNr, 0);
-  }
+  }*/
+  ledstrip.clearAll();
   Ack();
 }
 
