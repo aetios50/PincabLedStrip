@@ -1,5 +1,5 @@
 # What is it ?
-An alternative to drive WS2812 ledstrips from a Wemos D1 mini pro (much cheaper) rather than a Teensy
+An alternative to drive WS2812 ledstrips with DirectOutput Framework (Virtual Pinball Cabinet) from a Wemos D1 mini pro (much cheaper) rather than a Teensy.
 
 # Important notes
 Currently requires a patched DOF, the below won't work on existing one. Please use the **DirectOutput.DLL** from this repository
