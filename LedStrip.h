@@ -48,6 +48,7 @@ class LedStrip {
 
     void addNewStrip(uint8_t index,uint16_t length);
     void setStripLength(uint16_t length);
+    void setStripBrightness(uint8_t index,uint8_t brightness);
     void clearAll();
     void setPixels(uint32_t start_num,uint16_t len,int color);
     void setPixel(uint32_t num, int color);

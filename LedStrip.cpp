@@ -47,6 +47,12 @@ void LedStrip::addNewStrip(uint8_t index,uint16_t length) {
   }
 }
 
+void LedStrip::setStripBrightness(uint8_t index, uint8_t brightness){
+  if ((index>=0)&&(index<NUMBER_LEDSTRIP)) {
+    FastLED[index].setCorrection(CRGB(brightness,brightness,brightness));
+  }
+}
+
 void LedStrip::show(void)
 {
   FastLED.show();

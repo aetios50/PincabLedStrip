@@ -104,6 +104,10 @@ void loop() {
         //Set length of a strip
         SetALedStripLength();
         break;
+      case 'B':
+        //Set brightness of a strip
+        SetALedStripBrightness();
+        break;
       case 'L':
         //Set length of strips
         SetLedStripLength();
@@ -277,6 +281,16 @@ void SetALedStripLength() {
   }
 }
 
+//Sets the brightness of a led strip
+void SetALedStripBrightness() {
+  while (!Serial.available()) {};
+  byte indexStrip = Serial.read();  while (!Serial.available()) {};
+  byte lastStrip = Serial.read();
+  while (!Serial.available()) {};
+  uint8_t brightness = Serial.read();
+  ledstrip.setStripBrightness(indexStrip,brightness);
+  Ack();
+}
 
 //Clears the data for all configured ledstrip
 void  ClearAllLedData() {
