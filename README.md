@@ -15,3 +15,12 @@ Your **cabinet.xml** file needs also to be adapted to use a 2Mbs serial connecti
     <ComPortBaudRate>2000000</ComPortBaudRate>
 	<SendPerLedstripLength>true</SendPerLedstripLength>
 	
+You can also set the brightness values per ledstrips, so you don't have to reflash to change brightness any more (except boot sequence)
+use PerLedstripBrightness xml tag and set values separated by spaces
+
+	<PerLedstripBrightness>160 255 255 0</PerLedstripBrightness> 
+
+Here first declared ledstrip will be lowered at 160, the two next ones will stay at full brightness, the last one will be disabled
+By default Wemos firmware create ledstrip at 255 brightness.
+	
+	
