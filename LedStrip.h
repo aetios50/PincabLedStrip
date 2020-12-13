@@ -10,7 +10,16 @@
 #include <FastLED.h>
 FASTLED_USING_NAMESPACE
 
-//First port in DOF configtool goes to D5, second to D6 and so on
+//Ports in configtool vs ports in wemos
+//Configtool   =====   Wemos
+//1            =====   D5
+//4            =====   D6
+//7            =====   D7
+//10           =====   D8
+//13           =====   D1
+//16           =====   D4
+//19           =====   D2
+//22           =====   D3
 #define DATA_PIN1   14 // D5
 #define DATA_PIN2   12 // D6 
 #define DATA_PIN3   13 // D7
