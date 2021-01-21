@@ -116,6 +116,10 @@ void loop() {
         //Fill strip area with color
         Fill();
         break;
+      case 'Q':
+        //receive compressed data for strips
+        ReceiveCompressedData();
+        break;
       case 'R':
         //receive data for strips
         ReceiveData();
@@ -221,6 +225,33 @@ void Fill() {
     for (word ledNr = firstLed; ledNr < endLedNr; ledNr++) {
       ledstrip.setPixel(ledNr, ColorData);
     }*/
+    Ack();
+  } else {
+    //Number of the first led or the number of ledstrip to receive is outside the allowed range
+    Nack();
+  }
+}
+
+//Receives data for the ledstriptrips
+void ReceiveCompressedData() {
+  word firstLed = ReceiveWord();
+  word numberOfCompressedData = ReceiveWord();
+  word numberOfLeds = ReceiveWord();
+  if ( firstLed <= configuredStripLength * NUMBER_LEDSTRIP && numberOfLeds > 0 && firstLed + numberOfLeds - 1 <= configuredStripLength * NUMBER_LEDSTRIP ) {
+    word startLed = firstLed;
+    word endLedNr = firstLed + numberOfLeds;
+    for (word numPack = 0; numPack < numberOfCompressedData; numPack++){
+       while (!Serial.available()) {};
+       byte nbLeds = Serial.read();
+       int color = ReceiveColorData();
+       for (word numLed = 0; numLed < nbLeds; numLed++){
+         ledstrip.setPixel(startLed + numLed, color);
+       }
+       startLed += nbLeds;
+       if (startLed >= endLedNr){
+        break;        
+       }
+    }
     Ack();
   } else {
     //Number of the first led or the number of ledstrip to receive is outside the allowed range
