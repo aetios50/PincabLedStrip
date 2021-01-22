@@ -88,6 +88,9 @@ for (uint32_t i = 0; i < configuredStripLength* NUMBER_LEDSTRIP; i++) {
   ClearAllLedData();
   ledstrip.show();
   /**/
+
+  //Reset all ledstrips to 0 size until ledstrip size are sent per index
+  ledstrip.reset();
 }
 
 static byte receivedByte;
@@ -242,12 +245,14 @@ void ReceiveCompressedData() {
     word endLedNr = firstLed + numberOfLeds;
     for (word numPack = 0; numPack < numberOfCompressedData; numPack++){
        while (!Serial.available()) {};
-       byte nbLeds = Serial.read();
+       unsigned char nbLeds = (unsigned char)Serial.read();
        int color = ReceiveColorData();
+       
        for (word numLed = 0; numLed < nbLeds; numLed++){
          ledstrip.setPixel(startLed + numLed, color);
        }
        startLed += nbLeds;
+       
        if (startLed >= endLedNr){
         break;        
        }
