@@ -88,6 +88,9 @@ for (uint32_t i = 0; i < configuredStripLength* NUMBER_LEDSTRIP; i++) {
   ClearAllLedData();
   ledstrip.show();
   /**/
+
+  //Reset all ledstrips to 0 size until ledstrip size are sent per index
+  ledstrip.reset();
 }
 
 static byte receivedByte;

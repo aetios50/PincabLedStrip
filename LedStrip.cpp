@@ -74,6 +74,12 @@ void LedStrip::clearAll() {
   FastLED.clear();
 }
 
+void LedStrip::reset() {
+  for(int i = 0; i < NUMBER_LEDSTRIP; i++){
+    FastLED[i].setLeds(leds[i],0);
+  }
+}
+
 void LedStrip::setPixels(uint32_t start_num,uint16_t len,int color)
 {
   uint32_t strip, offset;

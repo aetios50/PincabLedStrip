@@ -42,8 +42,8 @@ FASTLED_USING_NAMESPACE
 
 //#define LED_TYPE    WS2811
 #define LED_TYPE    WS2812
-//#define COLOR_ORDER RGB
-#define COLOR_ORDER GRB
+#define COLOR_ORDER RGB
+//#define COLOR_ORDER GRB
 
 /*************   VALUE TO CHANGE  *******************/
 //Defines the max number of ledstrip which is allowed per ledstrip.
@@ -72,6 +72,7 @@ class LedStrip {
     LedStrip(uint32_t numPerStrip);
     void begin(void);
 
+    void reset();
     void addNewStrip(uint8_t index,uint16_t length);
     void setStripLength(uint16_t length);
     void setStripBrightness(uint8_t index,uint8_t brightness);
