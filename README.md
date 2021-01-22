@@ -10,6 +10,8 @@ In you **cabinet.xml**, you'll have to change the <TeensyStripController></Teesy
 Note that the <Name> field in the controller can be anything you want, doesn't need to match the controller type name.
 Just be aware that this name has to match to any <OutputControllerName> field in the <LedStrip> descriptors.
 
+* Upgrade animation fluidity
+
 Your **cabinet.xml** file needs also to be adapted to use a 2Mbs serial connection & to activate a new feature (PerLedstripLength)
 
     <ComPortBaudRate>2000000</ComPortBaudRate>
@@ -20,15 +22,25 @@ Just add this setup to the WemosD1MPStripController to activate it.
 
 	<UseCompression>true</UseCompression>
 	
+With the latest version of the firmware, you don't have to change neither MaxLedsPerStrip nor NUMBER_LEDSTRIP.
+After the boot sequence updating all 8 hardcoded ledstrips, everything is reset to zero size ledstrips until DirectOutput send its setup for each ledstrip.
+So your Wemos will update exactly what needed for your setup, leading to way more fluidity if you have a regular ledstrips setup.
+
+* Ledstrip brightness :
+	
 You can also set the brightness values per ledstrips with the new DirectOutput.dll provided.
 Just add this setup to any of your <LedStrip> descriptors in cabinet .xml
 You don't need to change any brightness anymore in the firmware.
 
 	<Brightness>value</Brightness> where value is the brightness in percent, so 0 to 100 values are accepted, default is 100
 	
-With the latest version of the firmware, you don't have to change neither MaxLedsPerStrip nor NUMBER_LEDSTRIP.
-After the boot sequence updating all 8 hardcoded ledstrips, everything is reset to zero size ledstrips until DirectOutput send its setup for each ledstrip.
-So your Wemos will update exactly what needed for your setup, leading to way more fluidity if you have a regular ledstrips setup.
+* Test Command : 
+
+The usual RGB test at boot can now be triggered in other ways
+- enabling the TEST_ON_RESET define in PincabLedstrip.ino to have it trigerred on each Wemos reset
+- using a switch between D0 and GND
+- using DirectOutput via a 'T' command, set <TestOnConnect>true</TestOnConnect> in the WemosD1MPStripController descriptor in cabinet.xml
+
 
 
 	
