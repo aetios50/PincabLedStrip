@@ -20,10 +20,14 @@ static WifiDebug wifidebug;
 #include "LedStrip.h"
 
 #define FirmwareVersionMajor 1
-#define FirmwareVersionMinor 2
+#define FirmwareVersionMinor 4
 
 //Defines the Pinnumber to which the built in led
 #define LedPin D4
+
+// Defines the Pinnumber for the test button which is low when pressed
+//#define TEST_ON_RESET
+#define TestPin D0
 
 //Variable used to control the blinking and flickering of the led of the Wemos
 elapsedMillis BlinkTimer;
@@ -63,40 +67,49 @@ void setup() {
   wifidebug.debug_send_msg("Setup done");
 #endif
 
-  /****/
-  ClearAllLedData();
-  ledstrip.show();
-for (uint32_t i = 0; i < configuredStripLength* NUMBER_LEDSTRIP; i++) {
-  ledstrip.setPixel(i, BRIGHTNESS, 0, 0);
-  }
-  ledstrip.show();
-  FastLED.delay(200);
-  ClearAllLedData();
-  ledstrip.show();
-  for (uint32_t i = 0; i < configuredStripLength* NUMBER_LEDSTRIP; i++) {
-    ledstrip.setPixel(i, 0, BRIGHTNESS, 0);
-  }
-  ledstrip.show();
-  FastLED.delay(200);
-  ClearAllLedData();
-  ledstrip.show();
-  for (uint32_t i = 0; i < configuredStripLength* NUMBER_LEDSTRIP; i++) {
-    ledstrip.setPixel(i, 0, 0, BRIGHTNESS);
-  }
-  ledstrip.show();
-  FastLED.delay(200);
-  ClearAllLedData();
-  ledstrip.show();
-  /**/
+  //Initialize and find value of the test pin
+  pinMode(TestPin,INPUT_PULLUP); 
+  digitalWrite(TestPin, HIGH); 
 
-  //Reset all ledstrips to 0 size until ledstrip size are sent per index
-  ledstrip.reset();
+#ifdef TEST_ON_RESET
+  Test();
+#endif
+
+  ClearAllLedData();
+  ledstrip.show();
+}
+
+void TestLedstripColor(byte r, byte g, byte b){
+  ledstrip.clearAll();
+  ledstrip.show();
+  Blink();
+  FastLED.delay(200);
+  for(int i = 0; i < configuredStripLength * NUMBER_LEDSTRIP; i++){
+    ledstrip.setPixel(i,r, g, b);
+  }
+  ledstrip.show();
+  Blink();
+  FastLED.delay(200);
+  ledstrip.clearAll();
+  ledstrip.show();
+}
+
+void Test() {
+  TestLedstripColor(BRIGHTNESS, 0, 0);
+  TestLedstripColor(0, BRIGHTNESS, 0);
+  TestLedstripColor(0, 0, BRIGHTNESS);
 }
 
 static byte receivedByte;
 
 //Main loop of the programm gets called again and again.
 void loop() {
+
+  // run test if button is grounded
+  if (digitalRead(TestPin)==LOW) { 
+    Test();
+  }
+
   //Check if data is available
   if (Serial.available() > 0) {
 
@@ -142,6 +155,11 @@ void loop() {
       case 'M':
         //Get max number of ledstrip per strip
         SendMaxNumberOfLeds();
+        break;
+      case 'T':
+        //Launch a Test sequence
+        Test();
+        Ack();
         break;
       default:
         // no unknown commands allowed. Send NACK (N)
@@ -351,6 +369,10 @@ void SendMaxNumberOfLeds() {
   Serial.write(B);
   B = MaxLedsPerStrip & 255;
   Serial.write(B);
+
+  //Reset all ledstrips to 0 size until ledstrip size are sent per index
+  ledstrip.reset();
+
   Ack();
 }
 
