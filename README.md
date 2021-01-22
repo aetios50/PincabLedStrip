@@ -23,4 +23,6 @@ use PerLedstripBrightness xml tag and set values separated by spaces
 Here first declared ledstrip will be lowered at 160, the two next ones will stay at full brightness, the last one will be disabled
 By default Wemos firmware create ledstrip at 255 brightness.
 	
-	
+You MUST need to change the default speed of wemos in Arduino console from 80mhz to 160mhz, otherwise you will experiment random crashes/wemos freeze while using it:
+
+![Wemos Speed Settings](https://github.com/vakaobr/PincabLedStrip/blob/master/wemos%20arduino%20settings.jpeg?raw=true)
