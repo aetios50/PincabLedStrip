@@ -25,9 +25,13 @@ static WifiDebug wifidebug;
 //Defines the Pinnumber to which the built in led
 #define LedPin D4
 
+#define TEST_ON_RESET
+//#define TEST_SWITCH
+
 // Defines the Pinnumber for the test button which is low when pressed
-//#define TEST_ON_RESET
+#ifdef TEST_SWITCH
 #define TestPin D0
+#endif
 
 //Variable used to control the blinking and flickering of the led of the Wemos
 elapsedMillis BlinkTimer;
@@ -67,9 +71,11 @@ void setup() {
   wifidebug.debug_send_msg("Setup done");
 #endif
 
+#ifdef TEST_SWITCH
   //Initialize and find value of the test pin
   pinMode(TestPin,INPUT_PULLUP); 
   digitalWrite(TestPin, HIGH); 
+#endif
 
 #ifdef TEST_ON_RESET
   Test();
@@ -105,10 +111,12 @@ static byte receivedByte;
 //Main loop of the programm gets called again and again.
 void loop() {
 
+#ifdef TEST_SWITCH
   // run test if button is grounded
   if (digitalRead(TestPin)==LOW) { 
-    Test();
+      Test();
   }
+#endif
 
   //Check if data is available
   if (Serial.available() > 0) {

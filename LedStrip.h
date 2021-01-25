@@ -20,14 +20,14 @@ FASTLED_USING_NAMESPACE
 //16           =====   D4
 //19           =====   D2
 //22           =====   D3
-#define DATA_PIN1   14 // D5
-#define DATA_PIN2   12 // D6 
-#define DATA_PIN3   13 // D7
-#define DATA_PIN4   15 // D8
-#define DATA_PIN5   5 // D1 
-#define DATA_PIN6   2 // D4
-#define DATA_PIN7   4 // D2
-#define DATA_PIN8   0 // D3
+#define DATA_PIN1   D5 
+#define DATA_PIN2   D6 
+#define DATA_PIN3   D7 
+#define DATA_PIN4   D8 
+#define DATA_PIN5   D1 
+#define DATA_PIN6   D4 
+#define DATA_PIN7   D2 
+#define DATA_PIN8   D3 
 
 //Why 8 ports ? (example)
 //
