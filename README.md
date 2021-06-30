@@ -41,6 +41,27 @@ The usual RGB test at boot can now be triggered in other ways
 - using a switch between D0 and GND
 - using DirectOutput via a 'T' command, set <TestOnConnect>true</TestOnConnect> in the WemosD1MPStripController descriptor in cabinet.xml
 
+* new with firmware 2.0, EEprom customizable firmware :
+
+Up to 8 firmware settings are now configurable through EEProm data patching.
+You have to set READ_EEPROM_SETTINGS to 1 to enable this feature
+There are 8 available settings, 3 used for now.
+
+Current used settings are : 
+	-	Test On Reset : will make an RGB sequence each time the Wemos is powered or when the reset button is pressed.
+	- 	Test Switch : Arnoz' new Pinmos has a button wired on D0, enable this setting to use it, disable it if D0 is not wired or you'll have issues.
+	-	Activity Led : activity led is using D4, if your setup use this output, disable this setting to avoid interferences.
+
+All other settings are free for future firmware customization.
+
+To patch your settings in the EEprom, you'll have to flash an 8 bytes file containing your settings at the 0x3FB000 address.
+esptool command line example (Windows version) : 
+	esptool.exe -cp <COMPORT> -cd nodemcu -cb 921600 -cf <FirmwareFile> -ca 0x3FB000 -cf <SettingsFile>
+
+
+	
+
+
 
 
 	
