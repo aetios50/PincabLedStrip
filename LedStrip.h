@@ -10,6 +10,21 @@
 #include <FastLED.h>
 FASTLED_USING_NAMESPACE
 
+
+//#define LED_TYPE    WS2811
+#define LED_TYPE    WS2812
+//#define LED_TYPE    WS2812B
+//#define LED_TYPE    WS2813
+//#define COLOR_ORDER RGB
+#define COLOR_ORDER GRB
+
+/*************   VALUE TO CHANGE  *******************/
+//Defines the max number of ledstrip which is allowed per ledstrip.
+#define MaxLedsPerStrip 1024
+//Defines the number of ledstrip
+#define NUMBER_LEDSTRIP 8
+//#define NUMBER_LEDSTRIP 7
+
 //Ports in configtool vs ports in wemos
 //Configtool   =====   Wemos
 //1            =====   D5
@@ -27,7 +42,9 @@ FASTLED_USING_NAMESPACE
 #define DATA_PIN5   D1 
 #define DATA_PIN6   D4 
 #define DATA_PIN7   D2 
+#if (NUMBER_LEDSTRIP == 8)
 #define DATA_PIN8   D3 
+#endif
 
 //Why 8 ports ? (example)
 //
@@ -39,17 +56,6 @@ FASTLED_USING_NAMESPACE
 //MagnaSave left
 //Undercab smart (or complex MX)
 //Speaker ring (maybe using undercab complex MX ?)
-
-//#define LED_TYPE    WS2811
-#define LED_TYPE    WS2812
-#define COLOR_ORDER RGB
-//#define COLOR_ORDER GRB
-
-/*************   VALUE TO CHANGE  *******************/
-//Defines the max number of ledstrip which is allowed per ledstrip.
-#define MaxLedsPerStrip 1024
-//Defines the number of ledstrip
-#define NUMBER_LEDSTRIP 8
 
 //Define default Brightness settings - Those values now can be changed in cabinet.xml file like:
 //
@@ -64,7 +70,9 @@ FASTLED_USING_NAMESPACE
 #define BRIGHTNESS_PIN5 255 // Defines Brightness in pin 5 (0 to 255)
 #define BRIGHTNESS_PIN6 255 // Defines Brightness in pin 6 (0 to 255)
 #define BRIGHTNESS_PIN7 255 // Defines Brightness in pin 7 (0 to 255)
+#if (NUMBER_LEDSTRIP == 8)
 #define BRIGHTNESS_PIN8 255 // Defines Brightness in pin 8 (0 to 255)
+#endif
 /*************   END VALUE TO CHANGE  *******************/
 
 class LedStrip {
