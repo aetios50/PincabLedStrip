@@ -7,6 +7,7 @@
 
 #define SERIAL_BUFFER_SIZE 2048
 
+#include <EEPROM.h>
 #include <elapsedMillis.h>
 
 /***/
@@ -19,14 +20,59 @@ static WifiDebug wifidebug;
 
 #include "LedStrip.h"
 
-#define FirmwareVersionMajor 1
-#define FirmwareVersionMinor 4
+#define FirmwareVersionMajor 2
+#define FirmwareVersionMinor 0
 
 //Defines the Pinnumber to which the built in led
-#define LedPin D4
+#define LedPin LED_BUILTIN
+
+#define READ_EEPROM_SETTINGS 0
+
+enum SettingsEnum{
+  TEST_ON_RESET,
+  TEST_SWITCH,
+  ACTIVITY_LED,
+  SETTING4,
+  SETTING5,
+  SETTING6,
+  SETTING7,
+  SETTING8,
+  COUNT
+};
+
+uint8_t Settings[SettingsEnum::COUNT] = {
+  1,
+  0,
+  1,
+  0,
+  0,
+  0,
+  0,
+  0
+};
+
+void ReadSettings(){
+#if READ_EEPROM_SETTINGS
+  EEPROM.begin(SettingsEnum::COUNT);
+  for(int i = 0; i < SettingsEnum::COUNT; ++i){
+    Settings[i] = EEPROM.read(i);
+  }
+  EEPROM.end();
+#endif
+
+  Serial.print("Test on Reset :");
+  Serial.println(Settings[SettingsEnum::TEST_ON_RESET], DEC);
+  Serial.print("Test Switch :");
+  Serial.println(Settings[SettingsEnum::TEST_SWITCH], DEC);
+  Serial.print("Activity Led :");
+  Serial.println(Settings[SettingsEnum::ACTIVITY_LED], DEC);
+}
+
+bool HasSetting(int setting){
+  return Settings[setting] != 0;
+}
 
 // Defines the Pinnumber for the test button which is low when pressed
-//#define TEST_ON_RESET
 #define TestPin D0
 
 //Variable used to control the blinking and flickering of the led of the Wemos
@@ -40,12 +86,15 @@ uint32_t configuredStripLength = MaxLedsPerStrip;
 
 //Setup of the system. Is called once on startup.
 void setup() {
+
   Serial.begin(2000000);//921600);
   while (Serial.available()) {
     Serial.read();
   };
   delay(100);
   Serial.println("");
+
+  ReadSettings();
 
   /**/
 #ifdef DEBUG_ON_WIFI
@@ -58,8 +107,10 @@ void setup() {
   ledstrip.begin();
   ledstrip.show();
 
-  //Initialize the led pin
-  pinMode(LedPin, OUTPUT);
+  if (HasSetting(SettingsEnum::ACTIVITY_LED)){
+    //Initialize the led pin
+    pinMode(LedPin, OUTPUT);
+  }
 
   SetBlinkMode(0);
 
@@ -67,13 +118,15 @@ void setup() {
   wifidebug.debug_send_msg("Setup done");
 #endif
 
-  //Initialize and find value of the test pin
-  pinMode(TestPin,INPUT_PULLUP); 
-  digitalWrite(TestPin, HIGH); 
+  if (HasSetting(SettingsEnum::TEST_SWITCH)){
+    //Initialize and find value of the test pin
+    pinMode(TestPin,INPUT_PULLUP); 
+    digitalWrite(TestPin, HIGH); 
+  }
 
-#ifdef TEST_ON_RESET
-  Test();
-#endif
+  if (HasSetting(SettingsEnum::TEST_ON_RESET)){
+    Test();
+  }
 
   ClearAllLedData();
   ledstrip.show();
@@ -106,8 +159,8 @@ static byte receivedByte;
 void loop() {
 
   // run test if button is grounded
-  if (digitalRead(TestPin)==LOW) { 
-    Test();
+  if (HasSetting(SettingsEnum::TEST_SWITCH) && digitalRead(TestPin)==LOW) { 
+      Test();
   }
 
   //Check if data is available
@@ -177,18 +230,29 @@ void SetBlinkMode(int Mode) {
   BlinkModeTimeoutTimer = 0;
 }
 
+void ActivityLed(int activity)
+{
+  if (!HasSetting(SettingsEnum::ACTIVITY_LED)) return;
+
+  if (activity < 0){
+    digitalWrite(LedPin, !digitalRead(LedPin));
+  } else{
+    digitalWrite(LedPin, activity);
+  }
+}
+
 //Controls the blinking of the led
 void Blink() {
   switch (BlinkMode) {
     case 0:
       //Blinkmode 0 is only active after the start of the Wemos until the first command is received.
       if (BlinkTimer < 1500) {
-        digitalWrite(LedPin, 0);
+        ActivityLed(0);
       } else if (BlinkTimer < 1600) {
-        digitalWrite(LedPin, 1);
+        ActivityLed(1);
       } else {
         BlinkTimer = 0;
-        digitalWrite(LedPin, 0);
+        ActivityLed(0);
       }
       break;
     case 1:
@@ -196,7 +260,7 @@ void Blink() {
       //Mode expires 500ms after the last command has been received resp. mode has been set
       if (BlinkTimer > 30) {
         BlinkTimer = 0;
-        digitalWrite(LedPin, !digitalRead(LedPin));
+        ActivityLed(-1);
       }
       if (BlinkModeTimeoutTimer > 500) {
         SetBlinkMode(2);
@@ -205,23 +269,23 @@ void Blink() {
     case 2:
       //Blinkmode 2 is active while the Wemos is waiting for more commands
       if (BlinkTimer < 1500) {
-        digitalWrite(LedPin, 0);
+        ActivityLed(0);
       } else if (BlinkTimer < 1600) {
-        digitalWrite(LedPin, 1);
+        ActivityLed(1);
       } else if (BlinkTimer < 1700) {
-        digitalWrite(LedPin, 0);
+        ActivityLed(0);
       } else if (BlinkTimer < 1800) {
-        digitalWrite(LedPin, 1);
+        ActivityLed(1);
       } else {
         BlinkTimer = 0;
-        digitalWrite(LedPin, 0);
+        ActivityLed(0);
       }
     default:
       //This should never be active
       //The code is only here to make it easier to determine if a wrong Blinkcode has been set
       if (BlinkTimer > 2000) {
         BlinkTimer = 0;
-        digitalWrite(LedPin, !digitalRead(LedPin));
+        ActivityLed(-1);
       }
       break;
   }
@@ -263,7 +327,7 @@ void ReceiveCompressedData() {
     word endLedNr = firstLed + numberOfLeds;
     for (word numPack = 0; numPack < numberOfCompressedData; numPack++){
        while (!Serial.available()) {};
-       unsigned char nbLeds = (unsigned char)Serial.read();
+       uint8_t nbLeds = (uint8_t)Serial.read();
        int color = ReceiveColorData();
        
        for (word numLed = 0; numLed < nbLeds; numLed++){

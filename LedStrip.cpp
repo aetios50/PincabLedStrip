@@ -34,7 +34,9 @@ void LedStrip::begin(void) {
   FastLED.addLeds<LED_TYPE, DATA_PIN5, COLOR_ORDER>(leds[4], MaxLedsPerStrip).setCorrection(CRGB(BRIGHTNESS_PIN5,BRIGHTNESS_PIN5,BRIGHTNESS_PIN5) );
   FastLED.addLeds<LED_TYPE, DATA_PIN6, COLOR_ORDER>(leds[5], MaxLedsPerStrip).setCorrection(CRGB(BRIGHTNESS_PIN6,BRIGHTNESS_PIN6,BRIGHTNESS_PIN6) );
   FastLED.addLeds<LED_TYPE, DATA_PIN7, COLOR_ORDER>(leds[6], MaxLedsPerStrip).setCorrection(CRGB(BRIGHTNESS_PIN7,BRIGHTNESS_PIN7,BRIGHTNESS_PIN7) );
+#if (NUMBER_LEDSTRIP == 8)
   FastLED.addLeds<LED_TYPE, DATA_PIN8, COLOR_ORDER>(leds[7], MaxLedsPerStrip).setCorrection(CRGB(BRIGHTNESS_PIN8,BRIGHTNESS_PIN8,BRIGHTNESS_PIN8) );
+#endif
 
   //FastLED.setBrightness( BRIGHTNESS );
   FastLED.setDither( 0 );
